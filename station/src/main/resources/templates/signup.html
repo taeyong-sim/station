@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML"></script>
+    <title>sign up</title>
+  </head>
+  <body>
+    <h1>Sign Up</h1> <hr>
+
+    <form th:action="@{/user}" method="POST">
+      email : <input type="text" name="email"> <br>
+      password : <input type="password" name="password"> <br>
+      <div id="role">
+      <input type="radio" name="auth" value="ROLE_ADMIN,ROLE_USER" checked="checked" style="display:none;"> admin
+      <input type="radio" name="auth" value="ROLE_USER" style="display:none;"> user <br>
+      </div>
+      <button type="submit">Join</button>
+    </form> <br>
+
+    <a href="/login">LOGIN →</a>
+    
+    <script type="text/javascript">
+
+		$(document).ready(function(){
+			$("#role").hide();
+		});
+	</script>
+  </body>
+</html>

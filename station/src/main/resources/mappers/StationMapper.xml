@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.station.mapper.StationMapper">
+	
+	<update id="dropTable">
+		DROP TABLE IF EXISTS tb_station
+	</update>
+	
+	<update id="createTable" parameterType="java.lang.String">
+		CREATE TABLE tb_station(
+			line VARCHAR(10) NOT NULL,
+			stno INT NOT NULL,
+			stname VARCHAR(20) NOT NULL,
+			month INT NOT NULL,
+			headcnt INT NOT NULL
+		)
+	</update>
+	
+	<sql id="dataColumns">
+		  line
+		, stno
+		, stname
+		, month
+		, headcnt
+	</sql>
+	
+	<insert id="insertStation" parameterType="StationDTO">
+		INSERT INTO tb_station (
+			<include refid="dataColumns" />
+		) VALUES (
+			  #{line}
+			, #{stno}
+			, #{stname}
+			, #{month}
+			, #{headcnt}	
+		)
+	</insert>
+
+
+	<select id="selectDataList" resultType="ResultDTO">
+		SELECT 		
+				line,
+				stno,
+				stname,
+				SUM(IF(month=1, headcnt, 0)) AS 'january',
+		        SUM(IF(month=2, headcnt, 0)) AS 'february',
+		        SUM(IF(month=3, headcnt, 0)) AS 'march',
+		        SUM(IF(month=4, headcnt, 0)) AS 'april',
+		        SUM(IF(month=5, headcnt, 0)) AS 'may',
+		        SUM(IF(month=6, headcnt, 0)) AS 'june',
+		        SUM(IF(month=7, headcnt, 0)) AS 'july',
+		        SUM(IF(month=8, headcnt, 0)) AS 'august',
+		        SUM(IF(month=9, headcnt, 0)) AS 'september',
+		        SUM(IF(month=10, headcnt, 0)) AS 'october',
+		        SUM(IF(month=11, headcnt, 0)) AS 'november',
+		        SUM(IF(month=12, headcnt, 0)) AS 'december'
+		FROM
+				tb_station
+		GROUP BY
+				stname
+		ORDER BY
+				stno
+			
+	</select>
+
+	<select id="selectMaxAvgList" resultType="ResultDTO">
+		SELECT
+				stname,
+				SUM(IF(month=1, headcnt, 0)) AS 'january',
+		        SUM(IF(month=2, headcnt, 0)) AS 'february',
+		        SUM(IF(month=3, headcnt, 0)) AS 'march',
+		        SUM(IF(month=4, headcnt, 0)) AS 'april',
+		        SUM(IF(month=5, headcnt, 0)) AS 'may',
+		        SUM(IF(month=6, headcnt, 0)) AS 'june',
+		        SUM(IF(month=7, headcnt, 0)) AS 'july',
+		        SUM(IF(month=8, headcnt, 0)) AS 'august',
+		        SUM(IF(month=9, headcnt, 0)) AS 'september',
+		        SUM(IF(month=10, headcnt, 0)) AS 'october',
+		        SUM(IF(month=11, headcnt, 0)) AS 'november',
+		        SUM(IF(month=12, headcnt, 0)) AS 'december',
+		        ROUND(SUM(IF(month<![CDATA[>=]]>1 AND month <![CDATA[<=]]>12, headcnt, 0))/365,0) AS 'average'
+		FROM
+				tb_station
+		WHERE stno IN (SELECT a.stno
+					   FROM (
+					   		SELECT stno
+							FROM tb_station
+							GROUP BY stno
+							ORDER BY SUM(headcnt)/365 DESC
+							LIMIT 10
+							) a
+		          		) 
+		GROUP BY
+				stname
+		ORDER BY
+				average DESC
+	</select>
+
+	<select id="selectMinAvgList" resultType="ResultDTO">
+		SELECT 		
+				stname,
+				SUM(IF(month=1, headcnt, 0)) AS 'january',
+		        SUM(IF(month=2, headcnt, 0)) AS 'february',
+		        SUM(IF(month=3, headcnt, 0)) AS 'march',
+		        SUM(IF(month=4, headcnt, 0)) AS 'april',
+		        SUM(IF(month=5, headcnt, 0)) AS 'may',
+		        SUM(IF(month=6, headcnt, 0)) AS 'june',
+		        SUM(IF(month=7, headcnt, 0)) AS 'july',
+		        SUM(IF(month=8, headcnt, 0)) AS 'august',
+		        SUM(IF(month=9, headcnt, 0)) AS 'september',
+		        SUM(IF(month=10, headcnt, 0)) AS 'october',
+		        SUM(IF(month=11, headcnt, 0)) AS 'november',
+		        SUM(IF(month=12, headcnt, 0)) AS 'december',
+		        ROUND(AVG(IF(month<![CDATA[>=]]>1 AND month<![CDATA[<=]]>12, headcnt, 0)),0) AS 'average'
+		FROM
+				tb_station
+		WHERE stno = (
+						SELECT stno
+						FROM tb_station
+						GROUP BY stno
+						ORDER BY AVG(headcnt) ASC
+						LIMIT 1
+        			)
+		GROUP BY
+				stname
+		ORDER BY
+				average DESC
+	</select>
+	
+	<select id="selectMaxDiffList" resultType="StationDTO">
+		SELECT a.stname
+		FROM tb_station a
+		JOIN (SELECT stno,
+					stname,
+		            month,
+		            max(headcnt),
+		            min(headcnt),
+		            max(headcnt)-min(headcnt) AS SUB
+			FROM tb_station
+			GROUP BY stno) b
+			ON a.stno = b.stno
+			AND a.stname = b.stname
+			AND a.month = b.month
+		ORDER BY b.sub DESC
+		LIMIT 1
+	</select>
+
+</mapper>

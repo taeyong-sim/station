@@ -1,0 +1,113 @@
+/* index.html 서식 */
+#login-form {
+    float: right;
+	position: absolute;
+	right:12%;
+	top:20.5%;
+	font-size:14px;
+	
+}
+#login-form a{
+	padding:3px;
+	text-decoration:none;
+	color:black;
+}
+
+#nav_menu ul li:first-child {
+	border-left: none;
+}
+.body-style {
+    color: #555;
+    background: #eeeeee;
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.h1-style {
+    padding: 50px 0px;
+    font-weight: 400;
+    text-align: center;
+}
+.main-style {
+    min-width: 800px;
+    max-width: 1500px;
+    padding: 50px;
+    margin: 0 auto;
+    background: #ffffff;
+}
+.section-style {
+    display: none;
+    padding: 20px 0 0;
+    border-top: 1px solid #ddd;
+}
+
+/*라디오버튼 숨김*/
+.tab-input {
+      display: none;
+}
+label {
+    display: inline-block;
+    margin: 0 0 -1px;
+    padding: 15px 25px;
+    font-weight: 600;
+    text-align: center;
+    color: #bbb;
+    border: 1px solid transparent;
+}
+label:hover {
+    color: #2e9cdf;
+    cursor: pointer;
+}
+
+/*input 클릭시, label 스타일*/
+input:checked + label {
+      color: #555;
+      border: 1px solid #ddd;
+      border-top: 2px solid #2e9cdf;
+      border-bottom: 1px solid #ffffff;
+}
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3,
+#tab4:checked ~ #content4 {
+    display: block;
+}
+.dynamic-table {
+    border-collapse: collapse;
+    border-top: solid 2px #0c375b;
+}
+.dynamic-table td, .dynamic-table th{
+    padding: 5px 5px 5px 5px;
+    border: none;
+    border-bottom: solid 1px #d3d3d3;
+    vertical-align: top;
+    word-break: keep-all;
+}
+.dynamic-table th{
+	background-color:#5484ad;
+	color:#ffffff;
+	text-align:center;
+}
+.dynamic-table td{
+	text-align:right;
+	font-size: 13px;
+}
+.dynamic-table .align-center{
+	background-color:#f9f9f9;
+	text-align: center;
+	color:#000000;
+	font-weight:500;
+}
+.dynamic-table .align-average{
+	text-align: center;
+	color:#000000;
+}
+.add-comment{
+	margin : 3px;
+	font-size: 12px;
+	font-weight:bold;
+	text-align:right;
+}
+#btn1{
+	margin-left:0px;
+}

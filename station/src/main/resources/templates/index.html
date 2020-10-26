@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <title>NICE 평가정보 서비스운영 사전과제</title>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML"></script>
+<body class="body-style">
+	<h1 class="h1-style">서울교통공사 승하차 순위 데이터 적재 및 조회 API</h1>
+
+	<div id="login-form">
+	    <a id="a-logout" sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>
+	</div>
+
+	<div class="main-style">
+	    <input id="tab1" class="tab-input" type="radio" name="tabs" checked> <!--디폴트 메뉴-->
+	    <label for="tab1">요구사항 #2</label>
+	
+	    <input id="tab2" class="tab-input" type="radio" name="tabs">
+	    <label for="tab2">요구사항 #3</label>
+	
+	    <input id="tab3" class="tab-input" type="radio" name="tabs">
+	    <label for="tab3">요구사항 #4</label>
+	
+	    <input id="tab4" class="tab-input" type="radio" name="tabs">
+	    <label for="tab4">요구사항 #5</label>
+	
+	    <section class="section-style" id="content1">
+	        <button id="btn" style="margin:5px 5px 5px 0px;" onclick="fn_loadData();">데이터 적재</button>
+	        <button id="btn1" style="margin:5px 5px 5px 0px; color:#D8D8D8;" onclick="fn_selectAllData();" disabled="disabled">전체데이터 보기</button>
+	    	<br/>
+			<div>
+				<table style="border: 1px; width: 100%" id="dynamicTable2" class="dynamic-table">
+					<thead>
+						<colgroup>
+		    				<col style="width:4%"/>
+		    				<col style="width:3%"/>
+		    				<col style="width:11.4%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						  </colgroup>
+						<tr>
+							<th>호선</th>
+							<th>역번호</th>
+							<th>역명</th>
+							<th>1월</th>
+							<th>2월</th>
+							<th>3월</th>
+							<th>4월</th>
+							<th>5월</th>
+							<th>6월</th>
+							<th>7월</th>
+							<th>8월</th>
+							<th>9월</th>
+							<th>10월</th>
+							<th>11월</th>
+							<th>12월</th>
+						</tr>
+					</thead>
+					<tbody id="dynamicTbody1">
+					</tbody>
+				</table>
+			</div>
+	    </section>
+	
+	    <section class="section-style" id="content2">
+	     	<span>Q. 일평균 인원이 가장 많은 상위 10개의 역 명과 인원수는?</span>
+			<button id="btn2" style="margin:10px; color:#D8D8D8;" onclick="fn_selectAvgTop10();" disabled="disabled">SHOW</button>
+			<br/>
+			<div>
+				<table style="border: 1px; width: 100%" id="dynamicTable2" class="dynamic-table">
+					<thead>
+						<colgroup>
+		    				<col style="width:1.5%"/>
+		    				<col style="width:10.4%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.5%"/>
+						  </colgroup>
+						<tr>
+							<th>순위</th>
+							<th>역 명</th>
+							<th>1월</th>
+							<th>2월</th>
+							<th>3월</th>
+							<th>4월</th>
+							<th>5월</th>
+							<th>6월</th>
+							<th>7월</th>
+							<th>8월</th>
+							<th>9월</th>
+							<th>10월</th>
+							<th>11월</th>
+							<th>12월</th>
+							<th>일평균</th>
+						</tr>
+					</thead>
+					<tbody id="dynamicTbody2">
+					</tbody>
+				</table>
+			</div>
+			<p id="addcomment2" class="add-comment"></p>		
+			</section>
+	
+	    <section class="section-style" id="content3">
+	        <span>Q. 월 인원수 평균이 가장 낮은 역 명과 인원수는?</span>
+			<button id="btn3" style="margin:10px; color:#D8D8D8;" onclick="fn_selectMinAvg();" disabled="disabled">SHOW</button>
+			<br/>
+			<div>
+				<table style="border: 1px; width: 100%" id="dynamicTable3" class="dynamic-table">
+					<thead>
+						<colgroup>
+		    				<col style="width:3.2%"/>
+		    				<col style="width:8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:6.8%"/>
+						    <col style="width:7.2%"/>
+						  </colgroup>
+						<tr>
+							<th>순위</th>
+							<th>역 명</th>
+							<th>1월</th>
+							<th>2월</th>
+							<th>3월</th>
+							<th>4월</th>
+							<th>5월</th>
+							<th>6월</th>
+							<th>7월</th>
+							<th>8월</th>
+							<th>9월</th>
+							<th>10월</th>
+							<th>11월</th>
+							<th>12월</th>
+							<th>월평균</th>
+						</tr>
+					</thead>
+					<tbody id="dynamicTbody3">
+					</tbody>
+				</table>
+			</div>
+			<p id="addcomment3" class="add-comment"></p>
+	    </section>
+	
+	    <section class="section-style" id="content4">
+			<span>Q. 월 인원수 최대 최소의 차이가 가장 큰 역 명은?</span>
+			<button id="btn4" style="margin:10px; color:#D8D8D8" onclick="fn_selectMaxDiff();" disabled="disabled">SHOW</button>
+			<table style="border: 1px; width: 20%" id="dynamicTable4" class="dynamic-table">
+					<thead>
+						<colgroup>
+		    				<col style="width:40%"/>
+		    				<col style="width:60%"/>
+						  </colgroup>
+						<tr>
+							<th>순위</th>
+							<th>역 명</th>
+						</tr>
+					</thead>
+					<tbody id="dynamicTbody4">
+					</tbody>
+				</table>
+	    </section>
+
+	</div>
+	
+	<script type="text/javascript">
+
+	//요구사항 2번 (첫번째 탭)
+	function fn_loadData(){
+
+		$.ajax({
+				type : "GET",
+				url : "http://localhost:8080/drop",
+				async: false,
+			});
+		
+		$.ajax({
+				type : "GET",
+				url : "http://localhost:8080/create",
+				async: false,
+		});
+		
+		$.ajax({
+				type : "GET",
+				url : "http://localhost:8080/insert",
+				async: false,
+				success : function(data){
+	 				alert('데이터 적재가 완료되었습니다.');
+					$("#btn").attr('disabled', true); $("#btn").attr('style', 'margin:5px 5px 5px 0px;color:#D8D8D8');
+					$("#btn1").attr('disabled', false); $("#btn1").attr('style', 'margin:5px 5px 5px 0px; color:#000000');
+					$("#btn2").attr('disabled', false); $("#btn2").attr('style', 'margin:10px; color:#000000');
+					$("#btn3").attr('disabled', false); $("#btn3").attr('style', 'margin:10px; color:#000000');
+					$("#btn4").attr('disabled', false); $("#btn4").attr('style', 'margin:10px; color:#000000');
+				}
+		});
+	}
+	
+	//전체 데이터 확인
+	function fn_selectAllData(){
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/alldata",
+			dataType : "JSON",
+			success : function(data){
+ 				var tc = new Array();
+ 				var html = '';
+ 				console.log(JSON.stringify(data));	
+ 				for(var i=0;i<data.dataList.length;i++){
+ 					tc.push(data.dataList[i]);
+ 				}
+				
+ 				for(var i=0;i<tc.length;i++){
+ 				html += '<tr>';
+ 				html += '<td class="align-center">'+tc[i].line+'</td>';
+ 				html += '<td class="align-center">'+tc[i].stno+'</td>';
+ 				html += '<td class="align-center">'+tc[i].stname+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].january)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].february)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].march)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].april)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].may)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].june)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].july)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].august)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].september)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].october)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].november)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].december)+'</td>';
+ 				html += '</tr>';
+ 				}
+ 				
+ 				$("#dynamicTbody1").empty();
+ 				$("#dynamicTbody1").append(html);
+			}
+		});
+		
+		if($("#btn1").html() == '전체데이터 보기'){
+			$("#btn1").html('전체데이터 숨기기');
+			$("#dynamicTbody1").show();
+		} else{
+			$("#btn1").html('전체데이터 보기');
+			$("#dynamicTbody1").hide();
+		}
+	}
+	
+	//요구사항 3번 (두번째 탭)
+	function fn_selectAvgTop10(){
+		var comment = '* 일평균 인원 산출방법 : 각 역의 1월~12월 인원수 총합을 365일로 나눠서 반올림'
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/maxavg",
+			dataType : "JSON",
+			success : function(data){
+ 				var tc = new Array();
+ 				var html = '';
+ 				console.log(JSON.stringify(data));	
+ 				for(var i=0;i<data.maxAvgList.length;i++){
+ 					tc.push(data.maxAvgList[i]);
+ 				}
+				
+ 				for(var i=0;i<tc.length;i++){
+ 				html += '<tr>';
+ 				html += '<td class="align-center">'+(i+1)+'</td>';
+ 				html += '<td class="align-center">'+tc[i].stname+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].january)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].february)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].march)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].april)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].may)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].june)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].july)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].august)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].september)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].october)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].november)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].december)+'</td>';
+ 				html += '<td class="align-average">'+numberWithCommas(tc[i].average)+'</td>';
+ 				html += '</tr>';
+ 				}
+ 				
+ 				$("#dynamicTbody2").empty();
+ 				$("#dynamicTbody2").append(html);
+ 				$("#addcomment2").html(comment);
+			}
+		});
+		
+		if($("#btn2").html() == 'SHOW'){
+			$("#btn2").html('HIDE');
+			$("#dynamicTbody2").show();
+			$("#addcomment2").show();
+		} else{
+			$("#btn2").html('SHOW');
+			$("#dynamicTbody2").hide();
+			$("#addcomment2").hide();
+		}
+	}
+	
+	//요구사항 3번 (세번째 탭)
+	function fn_selectMinAvg(){
+		var comment = '* 월평균 인원 산출방법 : 각 역의 1월~12월 인원수 평균으로 계산하여 반올림'
+		$.ajax({
+			type : "GET",
+			url : "http://localhost:8080/minavg",
+			dataType : "JSON",
+			success : function(data){
+ 				var tc = new Array();
+ 				var html = '';
+ 				console.log(JSON.stringify(data));	
+ 				for(var i=0;i<data.minAvgList.length;i++){
+ 					tc.push(data.minAvgList[i]);
+ 				}
+				
+ 				for(var i=0;i<tc.length;i++){
+ 				html += '<tr>';
+ 				html += '<td class="align-center">'+(i+1)+'</td>';
+ 				html += '<td class="align-center">'+tc[i].stname+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].january)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].february)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].march)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].april)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].may)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].june)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].july)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].august)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].september)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].october)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].november)+'</td>';
+ 				html += '<td>'+numberWithCommas(tc[i].december)+'</td>';
+ 				html += '<td class="align-average">'+numberWithCommas(tc[i].average)+'</td>';
+ 				html += '</tr>';
+ 				}
+ 				
+ 				$("#dynamicTbody3").empty();
+ 				$("#dynamicTbody3").append(html);
+ 				$("#addcomment3").html(comment);
+			}
+		});
+		
+		if($("#btn3").html() == 'SHOW'){
+			$("#btn3").html('HIDE');
+			$("#dynamicTbody3").show();
+			$("#addcomment3").show();
+		} else{
+			$("#btn3").html('SHOW');
+			$("#dynamicTbody3").hide();
+			$("#addcomment3").hide();
+		}
+	}
+	
+	//요구사항 5번 (네번째 탭)
+	function fn_selectMaxDiff(){
+		var comment = '* 월평균 차이 산출방법 : 각 역의 1월~12월 인원수 최대값, 최소값의 차이로 계산하여 반올림'
+			$.ajax({
+				type : "GET",
+				url : "http://localhost:8080/maxdiff",
+				dataType : "JSON",
+				success : function(data){
+					var tc = new Array();
+	 				var html = '';
+	 				console.log(JSON.stringify(data));	
+	 				for(var i=0;i<data.maxDiffList.length;i++){
+	 					tc.push(data.maxDiffList[i]);
+	 				}
+					
+	 				for(var i=0;i<tc.length;i++){
+	 				html += '<tr>';
+	 				html += '<td class="align-center">'+(i+1)+'</td>';
+	 				html += '<td class="align-center">'+tc[i].stname+'</td>';
+	 				html += '</tr>';
+	 				}
+	 				
+	 				$("#dynamicTbody4").empty();
+	 				$("#dynamicTbody4").append(html);
+	 				$("#addcomment4").html(comment);
+
+	
+				}
+			});
+			
+		if($("#btn4").html() == 'SHOW'){
+			$("#btn4").html('HIDE');
+			$("#dynamicTbody4").show();
+			$("#addcomment4").show();
+		} else{
+			$("#btn4").html('SHOW');
+			$("#dynamicTbody4").hide();
+			$("#addcomment4").hide();
+		}
+	}
+	
+	function numberWithCommas(x) {
+	    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+	
+	</script>
+</body>
+
+</html>
