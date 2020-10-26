@@ -58,7 +58,7 @@ public class IndexController {
 
     	List<List<String>> list = new ArrayList<List<String>>();
     	try {
-    		Resource resource = new ClassPathResource("서울교통공사_승하차인원_20191231.csv");
+    		Resource resource = new ClassPathResource("rawdata.csv");
     		list = CsvUtils.readToList(resource.getURI().getPath().substring(1));
     	}catch(Exception e) {
     		System.out.println("시스템에 문제가 발생하였습니다.");
